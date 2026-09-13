@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Sorry, Laddu</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Work+Sans:wght@300;400;500&display=swap');
+
+  :root {
+    --dusk1: #2A1826;
+    --dusk2: #5A2F3F;
+    --dusk3: #8C4A5B;
+    --cream: #FAF3EF;
+    --plum: #3D2436;
+    --rose: #C97B84;
+    --gold: #C48A4A;
+    --blush: #F3DEDD;
+    --ginger: #E3924B;
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html, body {
+    margin: 0;
+    height: 100%;
+    overflow: hidden;
+    background: linear-gradient(180deg, var(--dusk1) 0%, var(--dusk2) 55%, var(--dusk3) 100%);
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 300;
+    color: var(--cream);
+  }
+
+  #app {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  .screen {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 6vh 7vw;
+    opacity: 1;
+    transition: opacity 0.6s ease;
+  }
+
+  /* ---------- STARS ---------- */
+  .star {
+    position: absolute;
+    background: var(--cream);
+    border-radius: 50%;
+    opacity: 0.5;
+    animation: twinkle ease-in-out infinite alternate;
+  }
+  @keyframes twinkle { from { opacity: 0.15; } to { opacity: 0.7; } }
+
+  /* ---------- SCENE SCREEN ---------- */
+  #sceneScreen { justify-content: space-between; padding: 5vh 0 0; }
+
+  .prompt {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: clamp(1.3rem, 6vw, 1.8rem);
+    color: var(--cream);
+    margin: 0;
+    padding: 0 8vw;
+    opacity: 0.95;
+  }
+
+  .ground {
+    position: relative;
+    width: 100%;
+    height: 42vh;
+    flex-shrink: 0;
+  }
+
+  .cat {
+    position: absolute;
+    bottom: 8vh;
+    width: 90px;
+    animation: bob 0.5s ease-in-out infinite alternate;
+  }
+
+  @keyframes bob {
+    from { transform: translateY(0); }
+    to { transform: translateY(-6px); }
+  }
+
+  #catLeft {
+    left: 6vw;
+    transform: scaleX(1);
+  }
+
+  #catRight {
+    right: 6vw;
+    transform: scaleX(-1);
+  }
+
+  .cat.walk-left {
+    animation: walkToCenterL 3s ease-in-out forwards, bob 0.35s ease-in-out infinite alternate;
+  }
+  .cat.walk-right {
+    animation: walkToCenterR 3s ease-in-out forwards, bob 0.35s ease-in-out infinite alternate;
+  }
+
+  @keyframes walkToCenterL {
+    to { left: calc(50% - 78px); }
+  }
+  @keyframes walkToCenterR {
+    to { right: calc(50% - 78px); }
+  }
+
+  .cat.meet-left { animation: leanRight 0.6s ease forwards; }
+  .cat.meet-right { animation: leanLeft 0.6s ease forwards; }
+
+  @keyframes leanRight { to { transform: scaleX(1) rotate(4deg) translateX(4px); } }
+  @keyframes leanLeft { to { transform: scaleX(-1) rotate(4deg) translateX(4px); } }
+
+  .tail {
+    transform-origin: 70% 90%;
+    animation: tailSway 0.9s ease-in-out infinite alternate;
+  }
+  @keyframes tailSway { from { transform: rotate(-8deg); } to { transform: rotate(10deg); } }
+
+  .heart-pop {
+    position: absolute;
+    font-size: 1.4rem;
+    color: var(--rose);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 20;
+  }
+
+  .heart-pop.go {
+    animation: heartPop 1.4s ease-out forwards;
+  }
+
+  @keyframes heartPop {
+    0% { opacity: 0; transform: translateY(0) scale(0.4); }
+    25% { opacity: 1; transform: translateY(-14px) scale(1.1); }
+    100% { opacity: 0; transform: translateY(-70px) scale(0.9); }
+  }
+
+  .sparkle {
+    position: absolute;
+    font-size: 1rem;
+    opacity: 0;
+    pointer-events: none;
+    color: var(--gold);
+    z-index: 20;
+  }
+  .sparkle.go { animation: sparklePop 1s ease-out forwards; }
+  @keyframes sparklePop {
+    0% { opacity: 0; transform: scale(0.3) rotate(0deg); }
+    30% { opacity: 1; transform: scale(1.2) rotate(90deg); }
+    100% { opacity: 0; transform: translateY(-40px) scale(0.5) rotate(180deg); }
+  }
+
+  .sorry-float {
+    position: absolute;
+    left: 50%;
+    bottom: 40%;
+    transform: translateX(-50%);
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: clamp(1.6rem, 8vw, 2.4rem);
+    color: var(--blush);
+    opacity: 0;
+    white-space: nowrap;
+    z-index: 25;
+  }
+
+  .sorry-float.go {
+    animation: floatSorry 2.4s ease-out forwards;
+  }
+
+  @keyframes floatSorry {
+    0% { opacity: 0; transform: translateX(-50%) translateY(20px) scale(0.9); }
+    20% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+    80% { opacity: 1; transform: translateX(-50%) translateY(-20px) scale(1); }
+    100% { opacity: 0; transform: translateX(-50%) translateY(-60px) scale(1); }
+  }
+
+  .continueBtn {
+    display: none;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1rem;
+    background: var(--rose);
+    color: var(--dusk1);
+    border: none;
+    padding: 0.85rem 2.2rem;
+    border-radius: 999px;
+    cursor: pointer;
+    margin-bottom: 6vh;
+    box-shadow: 0 10px 30px -8px rgba(201,123,132,0.6);
+    animation: gentlePulse 1.6s ease-in-out infinite;
+  }
+  @keyframes gentlePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+  .continueBtn.show { display: inline-block; }
+
+  .tapHint {
+    font-size: 0.85rem;
+    color: var(--blush);
+    opacity: 0.7;
+    margin-bottom: 6vh;
+  }
+
+  /* ---------- LETTER SCREEN ---------- */
+  #letterScreen {
+    display: none;
+    overflow-y: auto;
+    padding-top: 6vh;
+    padding-bottom: 6vh;
+  }
+
+  #slide2Screen {
+    display: none;
+    overflow-y: auto;
+    padding-top: 6vh;
+    padding-bottom: 6vh;
+  }
+
+  .letter-card {
+    position: relative;
+    background: var(--cream);
+    color: var(--plum);
+    border-radius: 6px;
+    padding: 2.6rem 2rem;
+    max-width: 420px;
+    width: 100%;
+    box-shadow: 0 30px 70px -20px rgba(0,0,0,0.5);
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+    animation: revealCard 0.7s ease forwards;
+  }
+
+  @keyframes revealCard {
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .letter-card h2 {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 500;
+    font-size: 1.6rem;
+    margin: 0 0 1.2rem;
+    text-align: center;
+  }
+
+  .letter-card p {
+    font-size: 1rem;
+    margin: 0 0 1.1rem;
+    line-height: 1.65;
+  }
+
+  .letter-card p:last-of-type { margin-bottom: 0; }
+
+  .signature {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1.2rem;
+    color: var(--rose);
+    margin-top: 1.6rem;
+    display: block;
+  }
+
+  #finalBtn { margin-top: 2rem; }
+
+  .btn {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1.05rem;
+    background: var(--plum);
+    color: var(--cream);
+    border: none;
+    padding: 0.9rem 2.4rem;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease;
+  }
+  .btn:hover { background: var(--rose); transform: translateY(-2px); }
+
+  #finalResponse {
+    display: none;
+    margin-top: 1.6rem;
+    text-align: center;
+  }
+  #finalResponse.show { display: block; }
+
+  #heartMendWrap {
+    transition: opacity 0.4s ease;
+  }
+
+  #brokenHeartBtn {
+    background: none;
+    border: none;
+    font-size: 3.4rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0.4rem;
+    transition: transform 0.25s ease;
+  }
+  #brokenHeartBtn:hover { transform: scale(1.08); }
+  #brokenHeartBtn.mended {
+    animation: mendPulse 0.6s ease;
+    cursor: default;
+  }
+  @keyframes mendPulse {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.35); }
+    100% { transform: scale(1); }
+  }
+
+  .tapHint2 {
+    font-size: 0.85rem;
+    color: var(--plum);
+    opacity: 0.6;
+    margin: 0.4rem 0 0;
+  }
+
+  #mendedMessage {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+  }
+  #mendedMessage.show { display: block; opacity: 1; }
+  #mendedMessage p {
+    font-size: 1.05rem;
+    margin: 0 0 1.4rem;
+  }
+
+  .ambient-heart {
+    position: fixed;
+    z-index: 5;
+    opacity: 0.16;
+    pointer-events: none;
+    animation: ambientFloat linear infinite;
+  }
+  @keyframes ambientFloat {
+    from { transform: translateY(0) rotate(0deg); }
+    to { transform: translateY(-100vh) rotate(30deg); }
+  }
+
+  .confetti {
+    position: fixed;
+    top: -10px;
+    z-index: 40;
+    pointer-events: none;
+    border-radius: 2px;
+    animation: confettiFall linear forwards;
+  }
+  @keyframes confettiFall {
+    to { transform: translateY(110vh) rotate(540deg); opacity: 0.9; }
+  }
+
+  .pawprint {
+    position: absolute;
+    font-size: 1.1rem;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 8;
+    animation: pawFade 1.8s ease-out forwards;
+  }
+  @keyframes pawFade {
+    0% { opacity: 0; transform: scale(0.6); }
+    20% { opacity: 0.55; transform: scale(1); }
+    100% { opacity: 0; transform: scale(0.9) translateY(4px); }
+  }
+
+  .side-petal {
+    position: fixed;
+    z-index: 6;
+    pointer-events: none;
+    opacity: 0.75;
+    animation: petalDrift linear forwards;
+  }
+  @keyframes petalDrift {
+    0% { transform: translate(0, 0) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.8; }
+    90% { opacity: 0.8; }
+    100% { transform: translate(var(--dx), var(--dy)) rotate(var(--rot)); opacity: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cat, .ambient-heart, .confetti, .heart-pop, .sparkle, .sorry-float, .continueBtn, .pawprint, .side-petal { animation: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <div id="starLayer"></div>
+
+  <!-- SCENE -->
+  <div class="screen" id="sceneScreen">
+    <p class="prompt" id="promptText">Tap to bring them together</p>
+
+    <div class="ground" id="ground">
+      <svg id="catLeft" class="cat" viewBox="0 0 100 90" xmlns="http://www.w3.org/2000/svg">
+        <g class="tail"><path d="M78 60 C 100 55, 100 30, 82 28" stroke="#E3924B" stroke-width="9" stroke-linecap="round" fill="none"/></g>
+        <ellipse cx="46" cy="62" rx="34" ry="22" fill="#E3924B"/>
+        <circle cx="30" cy="34" r="22" fill="#E3924B"/>
+        <path d="M14 22 L20 4 L30 20 Z" fill="#E3924B"/>
+        <path d="M46 22 L42 4 L32 20 Z" fill="#E3924B"/>
+        <path d="M16 24 L21 12 L27 21 Z" fill="#F3B27A"/>
+        <path d="M44 24 L40 12 L34 21 Z" fill="#F3B27A"/>
+        <circle class="eye" cx="24" cy="34" r="2.6" fill="#2A1826"/>
+        <circle class="eye" cx="37" cy="34" r="2.6" fill="#2A1826"/>
+        <path d="M28 42 Q30.5 45 33 42" stroke="#2A1826" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+        <ellipse cx="18" cy="40" rx="4" ry="2.4" fill="#F3B27A" opacity="0.7"/>
+        <ellipse cx="42" cy="40" rx="4" ry="2.4" fill="#F3B27A" opacity="0.7"/>
+      </svg>
+
+      <svg id="catRight" class="cat" viewBox="0 0 100 90" xmlns="http://www.w3.org/2000/svg">
+        <g class="tail"><path d="M78 60 C 100 55, 100 30, 82 28" stroke="#F3DEDD" stroke-width="9" stroke-linecap="round" fill="none"/></g>
+        <ellipse cx="46" cy="62" rx="34" ry="22" fill="#F8E9E6"/>
+        <circle cx="30" cy="34" r="22" fill="#F8E9E6"/>
+        <path d="M14 22 L20 4 L30 20 Z" fill="#F8E9E6"/>
+        <path d="M46 22 L42 4 L32 20 Z" fill="#F8E9E6"/>
+        <path d="M16 24 L21 12 L27 21 Z" fill="#E9B9C0"/>
+        <path d="M44 24 L40 12 L34 21 Z" fill="#E9B9C0"/>
+        <circle class="eye" cx="24" cy="34" r="2.6" fill="#2A1826"/>
+        <circle class="eye" cx="37" cy="34" r="2.6" fill="#2A1826"/>
+        <path d="M28 42 Q30.5 45 33 42" stroke="#2A1826" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+        <ellipse cx="18" cy="40" rx="4" ry="2.4" fill="#E9B9C0" opacity="0.7"/>
+        <ellipse cx="42" cy="40" rx="4" ry="2.4" fill="#E9B9C0" opacity="0.7"/>
+      </svg>
+    </div>
+
+    <button class="continueBtn" id="continueBtn">continue</button>
+  </div>
+
+  <!-- LETTER -->
+  <div class="screen" id="letterScreen">
+    <div class="letter-card">
+      <h2>Sorry, Laddu.</h2>
+      <p>Laddu ma, namma rendu perum sandai pottadhu enakkum romba hurt ah iruku 🥺.</p>
+      <p>Naan sonna/panna edhavadhu unakku hurt aagirundha genuinely sorry da ma.</p>
+      <p>Ippo konjam time kudupom… later calm ah pesi ellathayum seri pannalam.</p>
+      <p>Un kooda sandaiya vida, namma relationship enakku romba mukkiyam ❤️</p>
+      <span class="signature">— Dhanush</span>
+
+      <div style="text-align:center;">
+        <button class="btn" id="finalBtn">I forgive you</button>
+      </div>
+      <div id="finalResponse">
+        <div id="heartMendWrap">
+          <button id="brokenHeartBtn" aria-label="tap the heart">💔</button>
+          <p class="tapHint2">heart-a tap pannu</p>
+        </div>
+        <div id="mendedMessage">
+          <p>Romba neram kaakka vachitten, innum kooda kaakka vekkalam da… aana eppo pola pesaama mattum poyitta thaan (mami💓)… miss u ♥️</p>
+          <button class="btn" id="nextSlideBtn">Next ❤️</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 2 -->
+  <div class="screen" id="slide2Screen">
+    <div class="letter-card" id="slide2Card">
+      <h2>Azhagi… ❤️</h2>
+      <p>Unna paakumbodhu "azhagi" nu oru vaarthai mattum solla manasu kekkala…</p>
+      <p>En kannukku nee azhagi mattum illa, en manasukku romba pidicha azhagi 🫶🏻</p>
+      <p>Un azhaga paathu rasikka mattum illa… unnoda azhagaana sirippukku daily reason-a irukkanum nu aasai 😌❤️</p>
+      <span class="signature">— Dhanush</span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // stars
+  const starLayer = document.getElementById('starLayer');
+  for (let i = 0; i < 40; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = 1 + Math.random() * 2;
+    s.style.width = size + 'px';
+    s.style.height = size + 'px';
+    s.style.left = Math.random() * 100 + 'vw';
+    s.style.top = Math.random() * 55 + 'vh';
+    s.style.animationDuration = (2 + Math.random() * 3) + 's';
+    starLayer.appendChild(s);
+  }
+
+  const ground = document.getElementById('ground');
+  const catLeft = document.getElementById('catLeft');
+  const catRight = document.getElementById('catRight');
+  const promptText = document.getElementById('promptText');
+  const continueBtn = document.getElementById('continueBtn');
+  let played = false;
+
+  ground.addEventListener('click', playScene);
+  promptText.addEventListener('click', playScene);
+
+  function playScene() {
+    if (played) return;
+    played = true;
+    promptText.style.transition = 'opacity 0.4s ease';
+    promptText.style.opacity = '0';
+
+    catLeft.classList.add('walk-left');
+    catRight.classList.add('walk-right');
+    spawnPawTrail();
+
+    setTimeout(() => {
+      catLeft.classList.add('meet-left');
+      catRight.classList.add('meet-right');
+      spawnKissEffects();
+    }, 2900);
+
+    setTimeout(() => {
+      showSorryText();
+    }, 3600);
+
+    setTimeout(() => {
+      continueBtn.classList.add('show');
+    }, 6200);
+  }
+
+  function spawnKissEffects() {
+    const rect = ground.getBoundingClientRect();
+    const cx = rect.width / 2;
+    const cy = rect.height - 130;
+
+    for (let i = 0; i < 5; i++) {
+      setTimeout(() => {
+        const h = document.createElement('div');
+        h.className = 'heart-pop go';
+        h.textContent = '♥';
+        h.style.left = (cx + (Math.random() * 50 - 25)) + 'px';
+        h.style.top = (cy + (Math.random() * 20 - 30)) + 'px';
+        h.style.fontSize = (1 + Math.random() * 0.8) + 'rem';
+        ground.appendChild(h);
+        setTimeout(() => h.remove(), 1500);
+      }, i * 160);
+    }
+
+    for (let i = 0; i < 6; i++) {
+      setTimeout(() => {
+        const sp = document.createElement('div');
+        sp.className = 'sparkle go';
+        sp.textContent = '✦';
+        sp.style.left = (cx + (Math.random() * 90 - 45)) + 'px';
+        sp.style.top = (cy + (Math.random() * 40 - 20)) + 'px';
+        ground.appendChild(sp);
+        setTimeout(() => sp.remove(), 1100);
+      }, i * 120);
+    }
+  }
+
+  function showSorryText() {
+    const t = document.createElement('div');
+    t.className = 'sorry-float go';
+    t.textContent = 'sorry, Laddu \u2661';
+    ground.appendChild(t);
+    setTimeout(() => t.remove(), 2500);
+  }
+
+  continueBtn.addEventListener('click', goToLetter);
+
+  function goToLetter() {
+    const scene = document.getElementById('sceneScreen');
+    const letter = document.getElementById('letterScreen');
+    scene.style.opacity = '0';
+    setTimeout(() => {
+      scene.style.display = 'none';
+      letter.style.display = 'flex';
+      requestAnimationFrame(() => { letter.style.opacity = '1'; });
+      spawnAmbientHearts();
+      spawnSidePetals();
+      burstConfetti();
+    }, 400);
+  }
+
+  function spawnPawTrail() {
+    const groundRect = ground.getBoundingClientRect();
+    let ticks = 0;
+    const trailTimer = setInterval(() => {
+      ticks++;
+      [catLeft, catRight].forEach((cat) => {
+        const r = cat.getBoundingClientRect();
+        const paw = document.createElement('div');
+        paw.className = 'pawprint';
+        paw.textContent = '🐾';
+        paw.style.left = (r.left - groundRect.left + r.width / 2 - 8) + 'px';
+        paw.style.top = (r.top - groundRect.top + r.height - 6) + 'px';
+        ground.appendChild(paw);
+        setTimeout(() => paw.remove(), 1800);
+      });
+      if (ticks >= 9) clearInterval(trailTimer);
+    }, 320);
+  }
+
+  function spawnSidePetals() {
+    setInterval(() => {
+      const fromLeft = Math.random() < 0.5;
+      const p = document.createElement('div');
+      p.className = 'side-petal';
+      p.textContent = Math.random() < 0.5 ? '🌸' : '♡';
+      const size = 14 + Math.random() * 14;
+      p.style.fontSize = size + 'px';
+      p.style.color = '#C97B84';
+      const startY = Math.random() * window.innerHeight;
+      p.style.left = (fromLeft ? -20 : window.innerWidth + 20) + 'px';
+      p.style.top = startY + 'px';
+      const dx = (fromLeft ? 1 : -1) * (window.innerWidth * 0.6 + Math.random() * 120);
+      const dy = -(80 + Math.random() * 160);
+      p.style.setProperty('--dx', dx + 'px');
+      p.style.setProperty('--dy', dy + 'px');
+      p.style.setProperty('--rot', (fromLeft ? 1 : -1) * (180 + Math.random() * 180) + 'deg');
+      const dur = 6 + Math.random() * 4;
+      p.style.animationDuration = dur + 's';
+      document.body.appendChild(p);
+      setTimeout(() => p.remove(), dur * 1000 + 200);
+    }, 700);
+  }
+  function spawnAmbientHearts() {
+    setInterval(() => {
+      h.className = 'ambient-heart';
+      h.textContent = '♥';
+      h.style.color = '#C97B84';
+      const size = 14 + Math.random() * 20;
+      h.style.fontSize = size + 'px';
+      h.style.left = Math.random() * window.innerWidth + 'px';
+      h.style.bottom = '-40px';
+      h.style.animationDuration = (8 + Math.random() * 6) + 's';
+      document.body.appendChild(h);
+      setTimeout(() => h.remove(), 15000);
+    }, 900);
+  }
+
+  function burstConfetti() {
+    const colors = ['#C97B84', '#C48A4A', '#F3DEDD', '#FAF3EF'];
+    for (let i = 0; i < 60; i++) {
+      setTimeout(() => {
+        const c = document.createElement('div');
+        c.className = 'confetti';
+        const size = 6 + Math.random() * 6;
+        c.style.width = size + 'px';
+        c.style.height = size * 0.4 + 'px';
+        c.style.left = Math.random() * window.innerWidth + 'px';
+        c.style.background = colors[Math.floor(Math.random() * colors.length)];
+        c.style.animationDuration = (2.5 + Math.random() * 2) + 's';
+        document.body.appendChild(c);
+        setTimeout(() => c.remove(), 5000);
+      }, i * 30);
+    }
+  }
+
+  document.getElementById('finalBtn').addEventListener('click', () => {
+    document.getElementById('finalResponse').classList.add('show');
+    burstConfetti();
+  });
+
+  const brokenHeartBtn = document.getElementById('brokenHeartBtn');
+  const heartMendWrap = document.getElementById('heartMendWrap');
+  const mendedMessage = document.getElementById('mendedMessage');
+  let mended = false;
+
+  brokenHeartBtn.addEventListener('click', () => {
+    if (mended) return;
+    mended = true;
+    brokenHeartBtn.textContent = '❤️‍🩹';
+    brokenHeartBtn.classList.add('mended');
+
+    const card = brokenHeartBtn.closest('.letter-card');
+    const cardRect = card.getBoundingClientRect();
+    const btnRect = brokenHeartBtn.getBoundingClientRect();
+    spawnMiniHearts(card, btnRect.left - cardRect.left + btnRect.width / 2, btnRect.top - cardRect.top);
+
+    setTimeout(() => {
+      heartMendWrap.style.opacity = '0';
+      setTimeout(() => {
+        heartMendWrap.style.display = 'none';
+        mendedMessage.classList.add('show');
+      }, 400);
+    }, 900);
+  });
+
+  function spawnMiniHearts(container, x, y) {
+    for (let i = 0; i < 8; i++) {
+      setTimeout(() => {
+        const h = document.createElement('div');
+        h.className = 'heart-pop go';
+        h.textContent = '❤';
+        h.style.left = (x + (Math.random() * 50 - 25)) + 'px';
+        h.style.top = (y + (Math.random() * 20 - 30)) + 'px';
+        h.style.color = i % 2 === 0 ? '#C97B84' : '#C48A4A';
+        container.appendChild(h);
+        setTimeout(() => h.remove(), 1500);
+      }, i * 70);
+    }
+  }
+
+  document.getElementById('nextSlideBtn').addEventListener('click', goToSlide2);
+
+  function goToSlide2() {
+    const letter = document.getElementById('letterScreen');
+    const slide2 = document.getElementById('slide2Screen');
+    letter.style.opacity = '0';
+    setTimeout(() => {
+      letter.style.display = 'none';
+      slide2.style.display = 'flex';
+      const card = document.getElementById('slide2Card');
+      card.style.animation = 'none';
+      void card.offsetWidth;
+      card.style.animation = 'revealCard 0.7s ease forwards';
+      requestAnimationFrame(() => { slide2.style.opacity = '1'; });
+      burstConfetti();
+    }, 400);
+  }
+</script>
+
+</body>
+</html>
